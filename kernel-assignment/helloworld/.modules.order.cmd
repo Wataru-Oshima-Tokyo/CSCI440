@@ -1,0 +1,1 @@
+cmd_/home/wataru/CSCI440/kernel-assignment/helloworld/modules.order := {   echo /home/wataru/CSCI440/kernel-assignment/helloworld/hello.ko; :; } > /home/wataru/CSCI440/kernel-assignment/helloworld/modules.order

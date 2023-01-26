@@ -1,0 +1,1 @@
+cmd_/home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.ko /home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.o /home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.mod.o;  true

@@ -1,0 +1,1 @@
+cmd_/home/wataru/CSCI440/kernel-assignment/numpagefaults/Module.symvers :=  sed 's/ko$$/o/'  /home/wataru/CSCI440/kernel-assignment/numpagefaults/modules.order | scripts/mod/modpost -m -a    -o /home/wataru/CSCI440/kernel-assignment/numpagefaults/Module.symvers -e -i Module.symvers -T - 

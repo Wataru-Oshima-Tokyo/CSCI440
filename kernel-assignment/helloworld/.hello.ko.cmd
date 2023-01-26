@@ -1,0 +1,1 @@
+cmd_/home/wataru/CSCI440/kernel-assignment/helloworld/hello.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/wataru/CSCI440/kernel-assignment/helloworld/hello.ko /home/wataru/CSCI440/kernel-assignment/helloworld/hello.o /home/wataru/CSCI440/kernel-assignment/helloworld/hello.mod.o;  true

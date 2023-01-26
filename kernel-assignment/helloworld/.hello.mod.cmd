@@ -1,0 +1,1 @@
+cmd_/home/wataru/CSCI440/kernel-assignment/helloworld/hello.mod := printf '%s\n'   hello.o | awk '!x[$$0]++ { print("/home/wataru/CSCI440/kernel-assignment/helloworld/"$$0) }' > /home/wataru/CSCI440/kernel-assignment/helloworld/hello.mod
