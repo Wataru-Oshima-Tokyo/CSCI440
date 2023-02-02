@@ -1,1 +1,1 @@
-cmd_/home/wataru/CSCI440/kernel-assignment/numpagefaults/modules.order := {   echo /home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.ko; :; } > /home/wataru/CSCI440/kernel-assignment/numpagefaults/modules.order
+cmd_/home/wataru_bb_tokyo/CSCI440/kernel-assignment/numpagefaults/modules.order := {   echo /home/wataru_bb_tokyo/CSCI440/kernel-assignment/numpagefaults/numpagefaults.ko; :; } | awk '!x[$$0]++' - > /home/wataru_bb_tokyo/CSCI440/kernel-assignment/numpagefaults/modules.order

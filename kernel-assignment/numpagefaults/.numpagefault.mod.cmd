@@ -1,1 +1,0 @@
-cmd_/home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.mod := printf '%s\n'   numpagefault.o | awk '!x[$$0]++ { print("/home/wataru/CSCI440/kernel-assignment/numpagefaults/"$$0) }' > /home/wataru/CSCI440/kernel-assignment/numpagefaults/numpagefault.mod

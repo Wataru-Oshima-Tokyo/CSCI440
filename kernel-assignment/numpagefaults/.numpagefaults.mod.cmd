@@ -1,0 +1,1 @@
+cmd_/home/wataru_bb_tokyo/CSCI440/kernel-assignment/numpagefaults/numpagefaults.mod := { echo  /home/wataru_bb_tokyo/CSCI440/kernel-assignment/numpagefaults/numpagefaults.o;  echo; } > /home/wataru_bb_tokyo/CSCI440/kernel-assignment/numpagefaults/numpagefaults.mod
