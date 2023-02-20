@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
-
+#include <errno.h>
 int main(int argc, char **argv) 
 {
     int i, secs;
@@ -27,9 +27,11 @@ int main(int argc, char **argv)
        sleep(1);
 	
     pid = getpid(); 
-
-    if (kill(-pid, SIGTSTP) < 0)
-       fprintf(stderr, "kill (tstp) error");
+    // printf("pid %d\n", pid);
+    if (kill(-pid, SIGTSTP) < 0){
+        fprintf(stderr, "kill (tstp) error");
+    }
+       
 
     exit(0);
 

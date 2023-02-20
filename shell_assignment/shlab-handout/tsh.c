@@ -134,31 +134,32 @@ void eval(char *cmdline)
   // The 'bg' variable is TRUE if the job should run
   // in background mode or FALSE if it should run in FG
   //
+  struct job_t *jobp=NULL;
   int bg = parseline(cmdline, argv);
-
   if (argv[0] == NULL)
     return;   /* ignore empty lines */
   if (!builtin_cmd(argv)){
     // do something here
-    // int pid = 1;
-    pid_t id1 = fork();
-    // I need to fork here!!!!
-    if (id1==0){ //children
-      int result = execv(argv[0],argv);
+    pid_t pid = fork();
+    if (pid==0){ //children
+      setpgid(0, 0);
+      int result = execve(argv[0],argv,NULL);
+
       if (result == -1)
-        printf("%s: Command not found\n", *argv);    
+        printf("%s: Command not found\n", *argv);   
       exit(0);  
     }else{
-      // listjobs(current_job);
       if (!bg){
-        addjob(jobs, id1, FG, cmdline);
-        waitfg(id1);
+        addjob(jobs, pid, FG, cmdline);
+        jobp = getjobpid(jobs,pid);
+        waitfg(pid);
       }else{
         //printing the job here
-        addjob(jobs, id1, BG, cmdline);
-        int max_jid = maxjid(jobs);
-        printf("[%d] (%d) %s", (max_jid), id1, cmdline);
+        addjob(jobs, pid, BG, cmdline);
+        jobp = getjobpid(jobs,pid);
+        printf("[%d] (%d) %s", (jobp->jid), jobp->pid, jobp->cmdline);
       }
+     
     }
 
 
@@ -185,13 +186,8 @@ int builtin_cmd(char **argv)
     listjobs(jobs);
     return 1;
   }
-  else if (strcmp(argv[0], "quit") == 0)
+  else if (strcmp(argv[0], "quit") == 0){
     exit(0);
-  else if (strcmp(argv[0], "kill")  == 0){
-    //kill command here
-    pid_t pid = atoi(argv[1]);
-    kill(pid, SIGINT);
-    return 1;
   }else if (strcmp(argv[0], "bg")  == 0){
     do_bgfg(argv);
     return 1;
@@ -236,6 +232,7 @@ void do_bgfg(char **argv)
     return;
   }
 
+
   //
   // You need to complete rest. At this point,
   // the variable 'jobp' is the job pointer
@@ -245,6 +242,20 @@ void do_bgfg(char **argv)
   // so we've converted argv[0] to a string (cmd) for
   // your benefit.
   //
+
+  pid_t pid = jobp->pid;
+  if (strcmp(argv[0], "fg") == 0){
+      kill(-pid, SIGCONT);
+      jobp->state = FG;
+      //wait for the job to finish
+      waitfg(pid);
+  }else if (strcmp(argv[0], "bg") == 0){
+    kill(-pid, SIGCONT);
+    jobp->state = BG;
+    //run the command again here
+    printf("[%d] (%d) %s", (jobp->jid), jobp->pid, jobp->cmdline);
+  }
+
   
 
   return;
@@ -256,7 +267,9 @@ void do_bgfg(char **argv)
 //
 void waitfg(pid_t pid)
 {
-  while(fgpid(jobs) == pid){
+  struct job_t *jobp;
+  jobp = getjobpid(jobs, pid);
+  while (jobp->state == FG){
     sleep(0.1);
   }
   return;
@@ -280,10 +293,19 @@ void sigchld_handler(int sig)
 {
     pid_t pid;
     int   status;
-    while ((pid = waitpid(-1, &status, WNOHANG)) > 0)
+    struct job_t *jobp;
+    while ((pid = waitpid(-1, &status, WNOHANG|WUNTRACED)) > 0)
     {
-        // printf("sig: %d\n", sig);
-        printf("status: %d\n", status);
+        jobp = getjobpid(jobs, pid);
+        int jid = jobp->jid;
+        if (WIFSTOPPED(status)){
+          printf("Job [%d] (%d) stopped by signal %d\n", jid,pid,SIGTSTP);
+          jobp->state = ST;
+        }
+        if (WIFSIGNALED(status)&& (WTERMSIG(status) == SIGINT)){
+          printf("Job [%d] (%d) terminated by signal %d\n", jid,pid,SIGINT);
+          deletejob(jobs,pid);
+        }
         if (status==0){
             deletejob(jobs,pid);
         }
@@ -301,12 +323,10 @@ void sigchld_handler(int sig)
 //
 void sigint_handler(int sig)
 {
-
       int jid = maxjid(jobs);
       if (jid >0){
         pid_t pid = fgpid(jobs);
-        printf("Job [%d] (%d) terminated by signal %d\n", jid,pid,sig);
-        deletejob(jobs,pid);
+        kill(-pid, SIGINT);
       }
 
   return;
@@ -321,12 +341,12 @@ void sigint_handler(int sig)
 void sigtstp_handler(int sig)
 {
     int jid = maxjid(jobs);
-      if (jid >0){
+    if (jid >0){
       pid_t pid = fgpid(jobs);
-      printf("Job [%d] (%d) stopped by signal %d\n", jid,pid,sig);
       jobs[jid-1].state = ST;
+      kill(-pid, SIGTSTP);
     }
-  return;
+    return;
 }
 
 /*********************
