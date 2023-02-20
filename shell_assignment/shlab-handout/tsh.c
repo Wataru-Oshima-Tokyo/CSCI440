@@ -343,9 +343,10 @@ void sigtstp_handler(int sig)
     int jid = maxjid(jobs);
     if (jid >0){
       pid_t pid = fgpid(jobs);
-      jobs[jid-1].state = ST;
       kill(-pid, SIGTSTP);
     }
+
+    
     return;
 }
 
