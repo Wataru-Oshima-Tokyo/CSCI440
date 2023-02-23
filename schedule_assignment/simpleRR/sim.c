@@ -42,12 +42,14 @@ int main(int argc, char **argv){
         for(;time>0;time--){
             printf("Process %d executed\n", process->pid);
             processes[process->pid]--;
+            printf("Process value %d\n", processes[process->pid]);
             if(processes[process->pid]<0){
                 printf("Process %d Finished\n", process->pid);
                 break;
             }
         }
         if(processes[process->pid]>=0){
+            printf("pid %d\n",process->pid);
             addProcess(process);
         } else {
             free(process);

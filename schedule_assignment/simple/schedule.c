@@ -1,13 +1,18 @@
 #include "schedule.h"
 #include <stdlib.h>
-
+#include <stdio.h>
 
 
 /**
  * Function to initialize any global variables for the scheduler.
  */
+PCB* processes[10];
+int i =0;
 void init(){
-
+	PCB* proc = (PCB *) malloc(sizeof(PCB));
+	for (int i=0; i< 10; i++){// initialize the proccesses
+		processes[i] = proc;
+	}
 }
 
 /**
@@ -17,6 +22,7 @@ void init(){
  * @return true/false response for if the addition was successful
  */
 int addProcess(PCB *process){
+	processes[process->pid] = process;
     return 0;
 }
 
@@ -27,7 +33,7 @@ int addProcess(PCB *process){
  *      executed, returns NULL if there are no processes
  */
 PCB* nextProcess(){
-	return NULL;
+	return processes[i-1];
 }
 
 /**
@@ -37,5 +43,10 @@ PCB* nextProcess(){
  *		scheduled processes
  */
 int hasProcess(){
-	return 0;
+	if (processes[i] != NULL){
+		i++;
+		return 1;
+	}else{
+		return 0;
+	}
 }

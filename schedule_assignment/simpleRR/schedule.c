@@ -6,8 +6,13 @@
 /**
  * Function to initialize any global variables for the scheduler.
  */
+PCB* processes[10];
+int pid = 0;
 void init(){
-
+	PCB* proc = (PCB *) malloc(sizeof(PCB));
+	for (int i=0; i< 10; i++){// initialize the proccesses
+		processes[i] = proc;
+	}
 }
 
 /**
@@ -17,6 +22,7 @@ void init(){
  * @return true/false response for if the addition was successful
  */
 int addProcess(PCB* process){
+	processes[process->pid] = process;
 	return 0;
 }
 
@@ -28,7 +34,8 @@ int addProcess(PCB* process){
  * 		returns NULL if there is no process to be scheduled.
  */
 PCB* nextProcess(int *time){
-  return NULL;
+	*time =4;
+	return processes[pid-1];
 }
 
 /**
@@ -38,5 +45,15 @@ PCB* nextProcess(int *time){
  *		scheduled processes
  */
 int hasProcess(){
+	if (processes[pid] != NULL){
+		pid++;
+		//need to figure out here 
+		if (pid == 11)
+			pid = 1;
+		printf("pid: %d\n", pid);
+		return 1;
+	}else{
+		return 0;
+	}
 	return 0;
 }
